@@ -1,0 +1,11 @@
+---
+- hosts: edge
+  tasks:
+    - name: Installer le package mapr-jobtracker
+      ansible.builtin.yum:
+        name: mapr-jobtracker
+        state: present
+        update_cache: yes
+      become: yes
+      tags:
+        - install jobtracker

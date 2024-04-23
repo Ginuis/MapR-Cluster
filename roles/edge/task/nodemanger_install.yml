@@ -1,0 +1,11 @@
+---
+- hosts: edge
+  tasks:
+    - name: Installer le package mapr-nodemanager
+      ansible.builtin.yum:
+        name: mapr-nodemanager
+        state: present
+        update_cache: yes
+      become: yes
+      tags:
+        - install nodemanager

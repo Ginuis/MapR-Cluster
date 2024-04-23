@@ -1,0 +1,22 @@
+---
+- hosts: all
+  tasks:
+    - name: Mettre à jour les dépôts
+      ansible.builtin.yum:
+        name: '*'
+        state: latest
+      become: yes
+      tags:
+        - MAJ
+
+    - name: Rechercher le package "mapr-fileserver"
+      ansible.builtin.yum:
+        list: 'mapr-fileserver'
+      register: search_result
+      become: yes
+      tags:
+        fileserver
+
+    - name: Afficher le résultat de la recherche
+      ansible.builtin.debug:
+        msg: "La recherche du package 'mapr-fileserver' {{ 'a abouti.' if search_result.results|length > 0 else 'n\'a pas abouti.' }}""

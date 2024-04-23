@@ -1,0 +1,11 @@
+---
+- hosts: edge
+  tasks:
+    - name: Installer le package mapr-fileserver
+      ansible.builtin.yum:
+        name: mapr-fileserver
+        state: present
+        update_cache: yes
+      become: yes
+      tags:
+        - install fileserver

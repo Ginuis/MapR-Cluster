@@ -1,0 +1,32 @@
+---
+- hosts: edge
+  tasks:
+    - name: Installation de la clé GPG sur CentOS
+      ansible.builtin.rpm_key:
+        key: https://package.mapr.com/releases/pub/maprgpg.key
+      become: yes
+
+    - name: Vérifier si la clé GPG a été installée
+      ansible.builtin.stat:
+        path: /etc/pki/rpm-gpg/RPM-GPG-KEY-mapr
+      register: key_installed
+
+    - name: Afficher le statut de la clé installée
+      ansible.builtin.debug:
+        msg: "La clé GPG est installée: {{ 'Oui' if key_installed.stat.exists else 'Non' }}"
+
+    - name: Importer la clé depuis le fichier téléchargé
+      ansible.builtin.rpm_key:
+        key: maprgpg.key
+        state: present
+      become: yes
+
+    - name: Vérifier si la clé GPG est importée
+      ansible.builtin.shell: rpm -q gpg-pubkey --qf '%{name}-%{version}-%{release} --> %{summary}\n' | grep 'MapR'
+      register: key_imported
+      ignore_errors: true
+
+
+    - name: Afficher le statut de la clé importée
+      ansible.builtin.debug:
+        msg: "La clé GPG est importée: {{ 'Oui' if key_imported.rc == 0 else 'Non' }}"

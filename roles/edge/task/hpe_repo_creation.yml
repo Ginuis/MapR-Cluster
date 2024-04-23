@@ -1,0 +1,37 @@
+---
+- hosts: edge
+  tasks:
+    - name: Vérifier si le fichier mapr-hpe.repo existe
+      ansible.builtin.stat:
+        path: /etc/yum.repos.d/mapr-hpe.repo
+      register: repo_file
+
+    - name: Créer le fichier de dépôt mapr-hpe.repo si nécessaire
+      ansible.builtin.copy:
+        content: ""
+        dest: /etc/yum.repos.d/mapr-hpe.repo
+      when: not repo_file.stat.exists
+      become: yes
+
+    - name: Ajouter les repos maprtech et maprecosystem
+      ansible.builtin.blockinfile:
+        path: /etc/yum.repos.d/mapr-hpe.repo
+        block: |
+          [maprtech]
+          name=HPE Ezmeral Data Fabric
+          baseurl=https://package.ezmeral.hpe.com/releases/v6.1.1/redhat/
+          username=salem.ben.afia@gmail.com
+          password=k7grnmaTT5s5mSZJirKHbkfWrenTh5cDJejIQw2UiEiEatdIYWvzW3pz7D-aAdzNlkgxWG2uKoSSDw6fkyEM0A
+          enabled=1
+          gpgcheck=1
+          protect=1
+
+          [maprecosystem]
+          name=HPE Ezmeral Data Fabric
+          baseurl=https://package.ezmeral.hpe.com/releases/MEP/MEP-6.1.1/redhat
+          username=salem.ben.afia@gmail.com
+          password=k7grnmaTT5s5mSZJirKHbkfWrenTh5cDJejIQw2UiEiEatdIYWvzW3pz7D-aAdzNlkgxWG2uKoSSDw6fkyEM0A
+          enabled=1
+          gpgcheck=1
+          protect=1
+      become: yes

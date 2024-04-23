@@ -1,0 +1,11 @@
+---
+- hosts: all
+  tasks:
+    - name: Installer le package mapr-nfs
+      ansible.builtin.yum:
+        name: mapr-nfs
+        state: present
+        update_cache: yes
+      become: yes
+      tags:
+        - install nfs

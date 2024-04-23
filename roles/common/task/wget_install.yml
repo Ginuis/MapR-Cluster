@@ -1,0 +1,43 @@
+---
+- name: Check if Wget is installed
+  command: wget --version
+  register: wget_check
+  ignore_errors: true
+  tags:
+    - wget_install
+
+- name: Install Wget
+  yum:
+    name: wget
+    state: present
+  become: yes
+  when: wget_check.rc != 0
+  tags:
+    - wget_install
+
+- name: Display Wget installation status
+  debug:
+    msg: "Wget installation {{ 'succeeded' if wget_check.rc == 0 else 'failed' }}"
+  tags:
+    - wget_install
+
+- name: Display Wget version
+  command: wget --version
+  register: wget_version_output
+  when: wget_check.rc == 0
+  tags:
+    - wget_install
+
+- name: Display Wget version info
+  debug:
+    msg: "{{ wget_version_output.stdout }}"
+  when: wget_check.rc == 0
+  tags:
+    - wget_install
+
+- name: Fail if Wget installation failed
+  fail:
+    msg: "Wget installation failed. Check logs for details."
+  when: wget_check.rc != 0
+  tags:
+    - wget_install

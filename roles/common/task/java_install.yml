@@ -1,0 +1,62 @@
+---
+- name: Check if Java is installed
+  command: java -version
+  register: java_check
+  ignore_errors: true
+  tags:
+    - java_install
+
+- name: Remove existing Java installations
+  yum:
+    name:
+      - java-1.8.0-openjdk
+      - java-1.8.0-openjdk-devel
+      - java-1.8.0-openjdk-headless
+    state: absent
+  become: yes
+  when: java_check.rc == 0
+  tags:
+    - java_install
+
+- name: Update package cache
+  yum:
+    name: '*'
+    state: latest
+  become: yes
+  tags:
+    - java_install
+
+- name: Install Java 8
+  yum:
+    name: java-1.8.0-openjdk
+    state: present
+  become: yes
+  tags:
+    - java_install
+
+- name: Verify Java installation
+  command: java -version
+  register: java_version_output
+  ignore_errors: true
+  tags:
+    - java_install
+
+- name: Display Java installation status
+  debug:
+    msg: "Java installation {{ 'succeeded' if java_version_output.rc == 0 else 'failed' }}"
+  tags:
+    - java_install
+
+- name: Display Java version
+  debug:
+    msg: "{{ java_version_output.stdout }}"
+  when: java_version_output.rc == 0
+  tags:
+    - java_install
+
+- name: Fail if Java installation failed
+  fail:
+    msg: "Java installation failed. Check logs for details."
+  when: java_version_output.rc != 0
+  tags:
+    - java_install

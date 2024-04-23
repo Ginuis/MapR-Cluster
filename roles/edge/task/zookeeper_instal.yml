@@ -1,0 +1,21 @@
+---
+- hosts: edge
+  tasks:
+    - name: Installer le package mapr-zookeeper
+      ansible.builtin.yum:
+        name: mapr-zookeeper
+        state: present
+        update_cache: yes
+      become: yes
+      tags:
+       - zookeeper_install
+    
+- name: Configure MapR ZooKeeper on edge
+  template:
+    src: mapr-zoo.cfg.j2
+    dest: /opt/mapr/conf/zk.conf
+  become: yes
+  tags:
+    - zookeeper_install
+
+

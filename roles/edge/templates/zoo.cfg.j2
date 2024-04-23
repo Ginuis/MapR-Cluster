@@ -1,0 +1,10 @@
+{{ ansible_managed }}
+
+ZOOKEEPER_HOME={{ zookeeper_home }}
+ZOO_LOG_DIR={{ zookeeper_log_dir }}
+ZOO_LOG4J_PROP=INFO,ROLLINGFILE
+ZOOBINDIR={{ zookeeper_bin_dir }}
+ZOO_DATADIR_AUTOCREATE_DISABLE=true
+ZOOKEEPER_SERVER_PID_FILE={{ zookeeper_pid_file }}
+
+{{ zookeeper_servers }}
