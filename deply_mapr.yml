@@ -1,0 +1,13 @@
+---
+- name: Deploy MapR Esmeralda Cluster
+  hosts: all
+  become: yes
+  gather_facts: yes
+  roles:
+    - common
+    - master_node
+    - node01
+    - node02
+    - node03
+    - edge
+    - standby
